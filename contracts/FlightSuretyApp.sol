@@ -65,7 +65,7 @@ contract FlightSuretyApp {
      * @dev Contract constructor
      *
      */
-    constructor() public {
+    constructor() {
         contractOwner = msg.sender;
     }
 
@@ -122,10 +122,11 @@ contract FlightSuretyApp {
         bytes32 key = keccak256(
             abi.encodePacked(index, airline, flight, timestamp)
         );
-        oracleResponses[key] = ResponseInfo({
-            requester: msg.sender,
-            isOpen: true
-        });
+
+        ResponseInfo storage response = oracleResponses[key];
+        
+        response.requester = msg.sender;
+        response.isOpen = true;
 
         emit OracleRequest(index, airline, flight, timestamp);
     }
@@ -256,7 +257,7 @@ contract FlightSuretyApp {
     }
 
     // Returns array of three non-duplicating integers from 0-9
-    function generateIndexes(address account) internal returns (uint8[3] storage) {
+    function generateIndexes(address account) internal returns (uint8[3] memory) {
         uint8[3] memory indexes;
         indexes[0] = getRandomIndex(account);
 
